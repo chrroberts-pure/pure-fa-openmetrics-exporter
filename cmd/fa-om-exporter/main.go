@@ -119,7 +119,7 @@ func metricsHandler(w http.ResponseWriter, r *http.Request) {
 	address, apitoken := arraytokens.GetArrayParams(endpoint)
 	if len(authFields) == 2 && strings.ToLower(authFields[0]) == "bearer" {
 		apitoken = authFields[1]
-                address = endpoint
+		address = endpoint
 	}
 	if apitoken == "" {
 		http.Error(w, "Target authorization token is missing", http.StatusBadRequest)
@@ -135,6 +135,7 @@ func metricsHandler(w http.ResponseWriter, r *http.Request) {
 	collectors.Collector(context.TODO(), metrics, registry, faclient)
 
 	h := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
+	log.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
 	h.ServeHTTP(w, r)
 	faclient.Close()
 }
